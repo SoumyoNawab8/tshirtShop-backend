@@ -85,5 +85,17 @@ router.get('/profile/:customer_id',function(req,res){
     })
 })
 
+router.post('/update_profile',function(req,res){
+    let sql='UPDATE customer SET credit_card="'+req.body.credit_card+'" WHERE customer_id='+req.body.customer_id;
+    req.db.query(sql,(err,result)=>{
+        if(err){
+            res.send({status:false,message:err});
+        }
+        else{
+            res.send(result);
+        }
+    })
+})
+
 
 module.exports=router;
