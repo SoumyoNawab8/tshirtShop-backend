@@ -74,7 +74,16 @@ router.post('/signup',function(req,res,next){
     }
 })
 
-
+router.get('/profile/:customer_id',function(req,res){
+    req.db.query('SELECT * FROM customer WHERE customer_id='+req.params.customer_id,(err,result)=>{
+        if(err){
+            res.send({status:false,message:err});
+        }
+        else{
+            res.send({status:true,result});
+        }
+    })
+})
 
 
 module.exports=router;
