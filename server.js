@@ -5,6 +5,7 @@ var mysql= require('my-sql')
 var product=require('./router/products');
 var users=require('./router/users');
 const bodyParser = require('body-parser');
+var cors  = require('cors');
  
 function connectToDB(req,res,next){
     let db = mysql.createConnection({
@@ -24,6 +25,7 @@ function connectToDB(req,res,next){
       });
 }
 
+app.use(cors());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 

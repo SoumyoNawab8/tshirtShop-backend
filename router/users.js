@@ -56,7 +56,7 @@ router.post('/login',(req,res)=>{
             
             if(result.length>0){
                 jwt.sign({id:result[0].customer_id,name:result[0].name},'secret',{expiresIn:3600},(err,token) =>{
-                    res.json({succress:true,result:token})
+                    res.json({status:true,result:token})
                 })
             }
             else{
