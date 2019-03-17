@@ -34,6 +34,34 @@ app.use('/products',product)
 app.use('/users',users);
 
 
+app.get('/categories/by_department',(req,res)=>{
+  let db=req.db;
+
+  db.query('SELECT * FROM department',(err,departments)=>{
+    if(err){
+      res.status(500).send({status:false,message:err});
+    }
+    else{
+      departments.map((item,indx)=>{
+        db.query('SELECT * FROM category where department_id='+item.department_id,(error,category)=>{
+          if(error){
+            console.log(error);
+          }
+          else{
+            if(category[0].department_id==item.department_id){
+              departments[indx].category=category;
+            }
+
+            if(indx==departments.length-1){
+              res.send(departments);
+            }
+          }
+        })
+      })
+    }
+  })
+})
+
 
 
 
