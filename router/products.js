@@ -23,6 +23,42 @@ const getCategoryID=(req,res)=>new Promise(resolve=>{
     })
 })
 
+const getProductAttribute=(product_id)=>new Promise(resolve=>{
+    req.db.query('SELECT attribute_value_id FROM product_attribute WHERE product_id='+product_id,(errs,attribs)=>{
+        if(attribs){
+            let attribute={};
+            attribs.map((item,indx)=>{
+                req.db.query('SELECT * FROM attribute_value WHERE attribute_value_id='+item.attribute_value_id,(issue,attribRef)=>{
+                    if(attribRef){
+                        req.db.query('SELECT * FROM attribute WHERE attribute_id='+attribRef[0].attribute_id,(jhamela,attribNames)=>{
+                            if(attribNames){
+                                attribute[attribNames[0].name]=attribRef[0].value;
+
+                                if(indx==attribs.length-1){
+                                    resolve(attribute)
+                                }
+                            }
+                        })
+                    }
+                })
+            })
+            
+            
+        }
+    })
+})
+
+function randSize(){
+    let sizes=['S','M','L','XL','XXL'];
+    var x = Math.floor(Math.random() * sizes.length);
+    return sizes[x];
+  }
+
+function randColor(){
+    let colors=['White','Black','Red','Orange','Yellow','Green','Blue','Indigo','Purple'];
+    var x = Math.floor(Math.random() * colors.length);
+    return colors[x];
+}
 
 router.get('/:categoryName',function(req,res){
     console.log(req.params.categoryName)
@@ -42,6 +78,12 @@ router.get('/:categoryName',function(req,res){
                             res.status(500).send(error);
                         }
                         else{
+                            getProductAttribute(response[0].product_id).then(attribute=>{
+                                response[0]=Object.assign({},attribute);
+                            })
+                            response[0].size=randSize();
+                            response[0].color=randColor();
+                            
                             products.push(response[0])
 
                             if(indx==result.length-1){
